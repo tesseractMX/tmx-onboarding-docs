@@ -2,13 +2,8 @@
 
 ## Introducción
 
-Tesseract Onboarding es una herramienta de KYC compuesta por 17 pasos desagregados que tiene como objetivo identificar y verificar la identidad de una persona. A continuación se enlistan los pasos.
+Tesseract Onboarding es una herramienta de KYC compuesta por multiples pasos desagregados que tiene como objetivo ayudar a identificar y verificar la identidad de una persona. A continuación se enlistan los pasos:
 
-- Registro único con correo, teléfono y RFC o CURP.
-
-- Toma foto de identificación del INE.
-
-- Auto captura OCR y verificación de la identificación INE.
 
 - OCR del comprobante de domicilio, autocaptura, extracción de metadatos y verificación de comprobantes de domicilio (CFE y Telmex).
 
@@ -22,19 +17,9 @@ Tesseract Onboarding es una herramienta de KYC compuesta por 17 pasos desagregad
 
 - Consulta de la información de la CURP ante RENAPO.
 
-- Toma de selfie con gesticulación.
+- Video testimonial.
 
-- Comparación de foto selfie con identificación.
-
-- Toma fotografía de huellas dactilares.
-
-- Extracción de malla facial.
-
-- Firmado digital y emisión de constancia avalado por la NOM151.
-
-- Consulta en lista negras (Regulatorias y Personalizadas).
-
-- Grabación de auto entrevista.
+- Creación de Matríz de riesgo
 
 - Cruce de matriz de riesgo "Personalizada".
 
@@ -144,185 +129,207 @@ donde:
 
 
 
+### Consultas con claves
 
+Obtiene la información detallada de un cliente a través de su nombre, apellido, fecha de nacimiento, estado y género. 
 
-### Clients
-
-Obtiene el listado de todos los clientes registrados 
 ```http
-  GET /onboarding/api/v0/licenses/{licenses_id}/clients
+  POST /onboarding/api/v0/institution/licenses/{license_id}/data_query/get_curp
 ```
+
 donde: 
 | Parameter       | Type            | Description                                                 |
 | :-------------- | :-------------- | :---------------------------------------------------------- |
 | `licenses_id`   | `string`        | Clave única de la licencia perteneciente a la institución.  |
 
-
-#### Response
-| Key         | Value     | Description                                   |
-| :---------  | :-------- | :-------------------------------------------- |
-| `_content`  | `array`   | Colección de objetos cliente                  |
-| `_links`    | `object`  | Colección de objetos link.                    |
-| `_page`     | `object`  | Objeto con la metainformación de paginación.  |
-
-Crea un nuevo usuario 
-```http
-  POST /onboarding/api/v0/licenses/{licenses_id}/clients
-```
-donde:
-| Parameter       | Type     | Description                                    |
-| :-------------- | :------- | :--------------------------------------------- |
-| `licenses_id`   | `string` | Clave única de la licencia a la que pertenece. |
-
 #### Body
 
 | Parameter       | Type     | Description                                              |
 | :-------------- | :------- | :------------------------------------------------------- |
-| `RFC`           | `string` | Registro Federal de Contribuyentes del nuevo cliente.    |
-| `CURP`          | `string` | Clave Única de Registro de Población del nuevo cliente.  |
-| `email`         | `string` | Correo electrónico                                       |
-| `phone_number`  | `string` | Número telefónico                                        |
+| `name`          | `string` | Nombre del cliente.                                      |
+| `lastname`      | `string` | Apellido paterno del cliente.                            |
+| `surname`       | `string` | Apellido materno del cliente.                            |
+| `birthdate`     | `string` | Fecha de nacimiento del cliente en formato dd/mm/yyyy.   |
+| `state`         | `string` | Estado de nacimiento del cliente en formato de dos letras (por ejemplo, "CH" para Chihahua).  |
+| `gender`        | `string` | Género del cliente                                        |
+
 
 #### Response
-| Key               | Value    | Description                                                                              |
-| :---------------- | :------- | :--------------------------------------------------------------------------------------- |
-| `id`              | `string` | Identificador único del cliente.                                                         |
-| `institution_id`  | `string` | Identificador único de la institución a la que pertenece.                                |
-| `name`            | `string` | Nombre del cliente.                                                                      |
-| `last_name`       | `string` | Apellido paterno del cliente.                                                            |
-| `surname`         | `string` | Apellido materno del cliente.                                                            |
-| `gender`          | `string` | Sexo del cliente.                                                                        |
-| `RFC`             | `string` | Registro Federal de Contribuyentes del cliente.                                          |
-| `CURP`            | `string` | Clave Única de Registro de Población del cliente.                                        |
-| `age`             | `number` | Edad del cliente.                                                                        |
-| `birthdate`       | `string` | Fecha de nacimiento del cliente.                                                         |
-| `nationality`     | `string` | Nacionalidad del cliente.                                                                |
-| `person_type`     | `string` | Tipo de cliente.                                                                         |
-| `email`           | `string` | Correo electrónico del cliente.                                                          |
-| `phone_number`    | `string` | Número telefónico del cliente.                                                           |
-| `address`         | `object` | Domicilio del cliente.                                                                   |
-| `location`        | `object` | Ubicación del cliente.                                                                   |
-| `identifications` | `array`  | Identificaciones del cliente.                                                            |
-| `facial_mesh`     | `object` | Malla facial del cliente.                                                                |
-| `created_at`      | `string` | Representación de la fecha de creación del cliente en la zona horaria UTC.               |
-| `updated_at`      | `string` | Representación de la ultima fecha de actualización del cliente en la zona horaria UTC.   |
+| Key           | Value     | Description                                         |
+| :---------    | :-------- | :--------------------------------------------       |
+| `name`        | `string`  | Nombre del cliente.                                 |
+| `lastname`    | `string`  | Apellido paterno del cliente.                       |
+| `surname`     | `string`  | Apellido materno del cliente.                       |
+| `CURP`        | `string`  | Clave Única de Registro de Población del cliente.   |
+| `gender`      | `string`  | Género del cliente                                  |
+| `birthdate`   | `string`  | Fecha de nacimiento del cliente                     |
+| `nationality` | `string`  | Nacionalidad del cliente.                           |
+| `birth_state` | `string`  | Estado de nacimiento del cliente.                   |
+| `evidence_doc`| `number`  | Número de documento de evidencia.                   |
+| `evidence_doc_data`| `object`  | Datos del documento de evidencia.              |
+| `status`      | `number`  | Estatus de la CURP                                  |
 
-Obtiene La información de un cliente específico de la licencia. 
+donde el objeto `evidence_doc_data` contiene: 
+
+| Key                 | Value     | Description                                         |
+| :---------          | :-------- | :--------------------------------------------       |
+| `register_state`    | `string`  | Entidad de registro                                 |
+| `volume`            | `string`  | El volumen asociado al registro del documento.      |
+| `register_town_key` | `string`  | Clave de registro del pueblo o localidad            |
+| `register_year`     | `string`  | Año de registro                                     |
+| `register_state_year`| `string` | El año de registro en el estado.                    |
+| `sheet `            | `string`  | El número de hoja del registro.                     |
+| `certificate_number`| `string`  | Numero de acta.                                     |
+| `birth_state`       | `string`  | Estado de nacimiento del cliente.                   |
+| `book `             | `string`  | Libro relacionado al registro.                      |
+| `register_town`     | `string`  | Nombre de la localidad donde se realizó el registro.|
+
+
+
+Obtiene el nombre de una persona mediante su RFC
+
 ```http
-  GET /onboarding/api/v0/licenses/{licenses_id}/clients/{client_id}
+  POST /onboarding/api/v0/institution/licenses/{license_id}/data_query/get_rfc_name
 ```
-donde: 
-| Parameter     | Type     | Description                                                  |
-| :------------ | :------- | :----------------------------------------------------------- |
-| `licenses_id` | `string` | Clave única de la licencia pertenenciente a la institución.  |
-| `client_id`   | `string` | Clave única del cliente perteneciente a la licencia.         |
 
-#### Response
-| Key               | Value    | Description                                                                              |
-| :---------------- | :------- | :--------------------------------------------------------------------------------------- |
-| `id`              | `string` | Identificador único del cliente.                                                         |
-| `institution_id`  | `string` | Identificador único de la institución a la que pertenece.                                |
-| `name`            | `string` | Nombre del cliente.                                                                      |
-| `last_name`       | `string` | Apellido paterno del cliente.                                                            |
-| `surname`         | `string` | Apellido materno del cliente.                                                            |
-| `gender`          | `string` | Sexo del cliente.                                                                        |
-| `RFC`             | `string` | Registro Federal de Contribuyentes del cliente.                                          |
-| `CURP`            | `string` | Clave Única de Registro de Población del cliente.                                        |
-| `age`             | `number` | Edad del cliente.                                                                        |
-| `birthdate`       | `string` | Fecha de nacimiento del cliente.                                                         |
-| `nationality`     | `string` | Nacionalidad del cliente.                                                                |
-| `person_type`     | `string` | Tipo de cliente.                                                                         |
-| `email`           | `string` | Correo electrónico del cliente.                                                          |
-| `phone_number`    | `string` | Número telefónico del cliente.                                                           |
-| `address`         | `object` | Domicilio del cliente.                                                                   |
-| `location`        | `object` | Ubicación del cliente.                                                                   |
-| `identifications` | `array`  | Identificaciones del cliente.                                                            |
-| `facial_mesh`     | `object` | Malla facial del cliente.                                                                |
-| `created_at`      | `string` | Representación de la fecha de creación del cliente en la zona horaria UTC.               |
-| `updated_at`      | `string` | Representación de la ultima fecha de actualización del cliente en la zona horaria UTC.   |	
-
-Actualiza La información de un cliente específico de la licencia. 
-```http
-  PUT /onboarding/api/v0/licenses/{licenses_id}/clients/{client_id}
-```
 donde: 
-| Parameter     | Type     | Description                                                  |
-| :------------ | :------- | :----------------------------------------------------------- |
-| `licenses_id` | `string` | Clave única de la licencia pertenenciente a la institución.  |
-| `client_id`   | `string` | Clave única del cliente perteneciente a la licencia.         |
+| Parameter       | Type            | Description                                                 |
+| :-------------- | :-------------- | :---------------------------------------------------------- |
+| `licenses_id`   | `string`        | Clave única de la licencia perteneciente a la institución.  |
 
 #### Body
 
-| Key               | Value    | Description                                                                              |
-| :---------------- | :------- | :--------------------------------------------------------------------------------------- |
-| `id`              | `string` | Identificador único del cliente.                                                         |
-| `institution_id`  | `string` | Identificador único de la institución a la que pertenece.                                |
-| `name`            | `string` | Nombre del cliente.                                                                      |
-| `last_name`       | `string` | Apellido paterno del cliente.                                                            |
-| `surname`         | `string` | Apellido materno del cliente.                                                            |
-| `gender`          | `string` | Sexo del cliente.                                                                        |
-| `RFC`             | `string` | Registro Federal de Contribuyentes del cliente.                                          |
-| `CURP`            | `string` | Clave Única de Registro de Población del cliente.                                        |
-| `age`             | `number` | Edad del cliente.                                                                        |
-| `birthdate`       | `string` | Fecha de nacimiento del cliente.                                                         |
-| `nationality`     | `string` | Nacionalidad del cliente.                                                                |
-| `person_type`     | `string` | Tipo de cliente.                                                                         |
-| `email`           | `string` | Correo electrónico del cliente.                                                          |
-| `phone_number`    | `string` | Número telefónico del cliente.                                                           |
-| `address`         | `object` | Domicilio del cliente.                                                                   |
-| `location`        | `object` | Ubicación del cliente.                                                                   |
-| `identifications` | `array`  | Identificaciones del cliente.                                                            |
-| `facial_mesh`     | `object` | Malla facial del cliente.                                                                |
-| `created_at`      | `string` | Representación de la fecha de creación del cliente en la zona horaria UTC.               |
-| `updated_at`      | `string` | Representación de la ultima fecha de actualización del cliente en la zona horaria UTC.   |
+| Parameter       | Type     | Description                                                                      |
+| :-------------- | :------- | :----------------------------------------------------------------                |
+| `RFC`           | `string` | El Registro Federal de Contribuyentes que se utilizará para buscar información.  |
 
 #### Response
-| Key               | Value    | Description                                                                              |
-| :---------------- | :------- | :--------------------------------------------------------------------------------------- |
-| `id`              | `string` | Identificador único del cliente.                                                         |
-| `institution_id`  | `string` | Identificador único de la institución a la que pertenece.                                |
-| `name`            | `string` | Nombre del cliente.                                                                      |
-| `last_name`       | `string` | Apellido paterno del cliente.                                                            |
-| `surname`         | `string` | Apellido materno del cliente.                                                            |
-| `gender`          | `string` | Sexo del cliente.                                                                        |
-| `RFC`             | `string` | Registro Federal de Contribuyentes del cliente.                                          |
-| `CURP`            | `string` | Clave Única de Registro de Población del cliente.                                        |
-| `age`             | `number` | Edad del cliente.                                                                        |
-| `birthdate`       | `string` | Fecha de nacimiento del cliente.                                                         |
-| `nationality`     | `string` | Nacionalidad del cliente.                                                                |
-| `person_type`     | `string` | Tipo de cliente.                                                                         |
-| `email`           | `string` | Correo electrónico del cliente.                                                          |
-| `phone_number`    | `string` | Número telefónico del cliente.                                                           |
-| `address`         | `object` | Domicilio del cliente.                                                                   |
-| `location`        | `object` | Ubicación del cliente.                                                                   |
-| `identifications` | `array`  | Identificaciones del cliente.                                                            |
-| `facial_mesh`     | `object` | Malla facial del cliente.                                                                |
-| `created_at`      | `string` | Representación de la fecha de creación del cliente en la zona horaria UTC.               |
-| `updated_at`      | `string` | Representación de la ultima fecha de actualización del cliente en la zona horaria UTC.   |
+| Key           | Value     | Description                                         |
+| :---------    | :-------- | :--------------------------------------------       |
+| `rfc`         | `string`  | El Registro Federal de Contribuyentes buscado.      |
+| `name`        | `string`  | El nombre asociado con el RFC consultado.           |
 
-Eliminar un cliente específico de la licencia.
+
+Obtiene los datos del Servicio de Administración Tributaria de una persona mediante su RFC Y CIF
+
 ```http
-  DELETE /onboarding/api/v0/licenses/{licenses_id}/clients/{client_id}
+  POST /onboarding/api/v0/institution/licenses/{license_id}/data_query/rfc
 ```
+
 donde: 
-| Parameter     | Type     | Description                                                  |
-| :------------ | :------- | :----------------------------------------------------------- |
-| `licenses_id` | `string` | Clave única de la licencia pertenenciente a la institución.  |
-| `client_id`   | `string` | Clave única del cliente perteneciente a la licencia.         |
+| Parameter       | Type            | Description                                                 |
+| :-------------- | :-------------- | :---------------------------------------------------------- |
+| `licenses_id`   | `string`        | Clave única de la licencia perteneciente a la institución.  |
+
+#### Body
+
+| Parameter       | Type     | Description                                |
+| :-------------- | :------- | :---------------------------------------   |
+| `RFC`           | `string` | El Registro Federal de Contribuyentes      |
+| `CIF`           | `string` | La Clave de Identificación Fiscal          |
+
+
+#### Response
+| Key                    | Value     | Description                                         |
+| :---------             | :-------- | :--------------------------------------------       |
+| `rfc`                  | `string`  | El Registro Federal de Contribuyentes buscado.      |
+| `cif`                  | `string`  | La Clave de Identificación Fiscal consultada        |
+| `id_data`              | `object`  | Datos de identificación relacionados con el RFC.    |
+| `location_data`        | `object`  | Datos de ubicación relacionados con el RFC.         |
+| `tax-related features` | `array`   | Características Fiscales                            |
+
+
+Obtiene información detallada de un cliente mediante su CURP
+
+```http
+  POST /onboarding/api/v0/institution/licenses/{license_id}/data_query/curp
+```
+
+donde: 
+| Parameter       | Type            | Description                                                 |
+| :-------------- | :-------------- | :---------------------------------------------------------- |
+| `licenses_id`   | `string`        | Clave única de la licencia perteneciente a la institución.  |
+
+#### Body
+
+| Parameter       | Type     | Description                                |
+| :-------------- | :------- | :---------------------------------------   |
+| `CURP`          | `string` | La Clave Única de Registro de Población    |
+
+
+#### Response
+| Key           | Value     | Description                                         |
+| :---------    | :-------- | :--------------------------------------------       |
+| `age`         | `number`  | Edad del cliente.                                   |
+| `name`        | `string`  | Nombre del cliente.                                 |
+| `lastname`    | `string`  | Apellido paterno del cliente.                       |
+| `surname`     | `string`  | Apellido materno del cliente.                       |
+| `CURP`        | `string`  | Clave Única de Registro de Población del cliente.   |
+| `gender`      | `string`  | Género del cliente                                  |
+| `birthdate`   | `string`  | Fecha de nacimiento del cliente                     |
+| `nationality` | `string`  | Nacionalidad del cliente.                           |
+| `birth_state` | `string`  | Estado de nacimiento del cliente.                   |
+| `evidence_doc`| `number`  | Número de documento de evidencia.                   |
+| `evidence_doc_data`| `object`  | Datos del documento de evidencia.              |
+| `status`      | `number`  | Estatus de la CURP                                  |
+
+donde el objeto `evidence_doc_data` contiene: 
+
+| Key                 | Value     | Description                                         |
+| :---------          | :-------- | :--------------------------------------------       |
+| `register_state`    | `string`  | Entidad de registro                                 |
+| `volume`            | `string`  | El volumen asociado al registro del documento.      |
+| `register_town_key` | `string`  | Clave de registro del pueblo o localidad            |
+| `register_year`     | `string`  | Año de registro                                     |
+| `register_state_year`| `string` | El año de registro en el estado.                    |
+| `sheet `            | `string`  | El número de hoja del registro.                     |
+| `certificate_number`| `string`  | Numero de acta.                                     |
+| `birth_state`       | `string`  | Estado de nacimiento del cliente.                   |
+| `book `             | `string`  | Libro relacionado al registro.                      |
+| `register_town`     | `string`  | Nombre de la localidad donde se realizó el registro.|
+
+
+
+Obtiene información electoral detallada de un cliente mediante su INE
+
+```http
+  POST /onboarding/api/v0/institution/licenses/{license_id}/data_query/ine
+```
+
+#### Body
+
+| Parameter       | Type     | Description                                |
+| :-------------- | :------- | :---------------------------------------   |
+| `CIC`           | `string` | La Clave de Identificación Ciudadana       |
+| `citizen_id`    | `string` | La Identificación del Ciudadano            |
+
+
+#### Response
+| Key           | Value     | Description                                         |
+| :---------    | :-------- | :--------------------------------------------       |
+| `key`         | `string`  | Clave del Emisión                                   |
+| `issue`       | `string`  | Número de Emisión                                   |
+| `ocr`         | `string`  | Valor OCR (Reconocimiento Óptico de Caracteres)     |
+| `cic`         | `string`  | La Clave de Identificación Ciudadana                |
+| `register_year`| `string` | Año de Registro                                     |
+| `issue_year`  | `string`  | Año de Emisión                                      |
+| `validity`    | `string`  | Vigencia                                            |
+
+
 
 ### Video testimonial
 
 Identificación y transcripción de voz de una persona en un video
 
 ```http
-  POST /onboarding/api/v0/client/{client_id}/video_statement
+  POST /onboarding/api/v0/institution/licenses/{{license_id}}/video_statement/
 ```
 donde: 
 | Parameter     | Type     | Description                                                  |
 | :------------ | :------- | :----------------------------------------------------------- |
-| `client_id`   | `string` | Clave única del cliente perteneciente a la licencia.         |
+| `license_id`   | `string` | Clave única de la licencia.         |
 
-### Body:
+#### Body:
 
 | Parameter | Type             | Description                                                       |
 | :-------- | :--------------- | :---------------------------------------------------------------- |
@@ -336,600 +343,796 @@ donde:
 | `statement`         | `string` | Cadena de texto reconocida del video.              |
 | `face_match_score`  | `string` | Porcentaje de reconocimiento respecto a la imagen. |
 
-### Ubicación
 
-Guarda el detalle de la ubicación de un cliente.
+### Matriz de riesgo
+
+Crea una nueva matriz de riesgo
 ```http
-  POST /onboarding/api/v0/licenses/{licenses_id}/clients/{client_id}/location
+  POST /onboarding/api/v0/risk_matrix
 ```
-#### Donde:
-| Parameter         | Type        | Description                                                       |
-| :---------------- | :---------- | :---------------------------------------------------------------- |
-| `licenses_id`      | `string` | Clave única de la licencia perteneciente a la institución.          |
-| `client_id`  | `string` | Clave única del cliente perteneciente a la licencia.      |
 
 #### Body
 | Parameter         | Type        | Description                                                       |
 | :---------------- | :---------- | :---------------------------------------------------------------- |
-| `altitude`      | `number` | **Requerido**. Coordenada que refiere la altitud de la ubicación. |
-| `latitude`  | `number` | **Requerido**. Coordenada que refiere la latitud de la ubicaciòn. |
-#### Response
-| Key               | Value    | Description                                                                              |
-| :---------------- | :------- | :--------------------------------------------------------------------------------------- |
-| `altitude`              | `number` | Coordenada de altitud de la ubicación del cliente.                |
-| `latitude`              | `number` | Coordenada de latitud de la ubicación del cliente.                |
-| `road`              | `string` | Calle asociada a la ubicación del cliente.                |
-| `city`              | `string` | Ciudad asociada a la ubicación del cliente.                |
-| `state`              | `string` | Estado asociado a la ubicación del cliente.                |
-| `postcode`              | `string` | Código postal asociado a la ubicación del cliente.                |
-| `country`              | `string` | País asociado a de la ubicación del cliente.                |
- 
+| `name`            | `string`    | **Requerido**. Nombre asociado a la matriz de riesgo. |
+| `description`     | `string`    | **Requerido**. Descripción de la matriz de riesgo. |
+| `catalog_id`      | `string`    | **Requerido**. ID del catalogo asociado a la matriz de riesgo. |
+| `rows`            | `number`    | **Requerido**.  Número de filas en la matriz de riesgo. |
+| `columns`         | `number`    | **Requerido**. Número de columnas en la matriz de riesgo. |
 
-Recupera el detalle de la ubicación asociada a un cliente
-
-```http
-  GET /onboarding/api/v0/licenses/{licenses_id}/clients/{client_id}/location
-```
-
-#### Donde:
-| Parameter         | Type        | Description                                                       |
-| :---------------- | :---------- | :---------------------------------------------------------------- |
-| `licenses_id`      | `string` | Clave única de la licencia perteneciente a la institución.          |
-| `client_id`  | `string` | Clave única del cliente perteneciente a la licencia.      |
 
 #### Response
-| Key               | Value    | Description                                                                              |
-| :---------------- | :------- | :--------------------------------------------------------------------------------------- |
-| `altitude`              | `number` | Coordenada de altitud de la ubicación del cliente.                |
-| `latitude`              | `number` | Coordenada de latitud de la ubicación del cliente.                |
-| `road`              | `string` | Calle asociada a la ubicación del cliente.                |
-| `city`              | `string` | Ciudad asociada a la ubicación del cliente.                |
-| `state`              | `string` | Estado asociado a la ubicación del cliente.                |
-| `postcode`              | `string` | Código postal asociado a la ubicación del cliente.                |
-| `country`              | `string` | País asociado a de la ubicación del cliente.                |
- 
-Elimina el detalle de la ubicación asociada a un cliente
+| Key               | Value     | Description                                                           |
+| :---------------- | :---------- | :----------------------------------------------------------------   |
+| `status`          | `string`    |  Estado de la petición. Indica el resultado.                        |
+| `matrix`          | `object`    |  Objeto que contiene detalles de la matriz de riesgo.               |
 
+El objeto `matrix` contiene la siguiente información:
+
+| Key               | Value      | Description                                          |
+| :---------------- | :-------- | :---------------------------------------------------  |
+| `id`              | `string`  | Identificador único de la matriz de riesgo.           |
+| `name`            | `string`  | Nombre de la matriz de riesgo.                        |
+| `description`     | `string`  | Descripción de la matriz de riesgo.                   |
+| `catalog_id`      | `string`  | Identificador del catálogo asociado.                  |
+| `sections`        | `array`   | Secciones de la matriz de riesgo                      |
+| `rows`            | `number`  | Número de filas en la matriz de riesgo.               |
+| `columns`         | `number`  | Número de columnas en la matriz de riesgo.            |
+| `risk_thresholds` | `array`   | Umbrales de riesgo                                    |
+
+
+
+Obtiene una matriz de riesgo
 ```http
-  DELETE /onboarding/api/v0/licenses/{licenses_id}/clients/{client_id}/location
+  GET /onboarding/api/v0/risk_matrix/{id}
 ```
 
-#### Donde:
-| Parameter         | Type        | Description                                                       |
-| :---------------- | :---------- | :---------------------------------------------------------------- |
-| `licenses_id`      | `string` | Clave única de la licencia perteneciente a la institución.          |
-| `client_id`  | `string` | Clave única del cliente perteneciente a la licencia.      |
+donde: 
+| Parameter       | Type            | Description                                                 |
+| :-------------- | :-------------- | :---------------------------------------------------------- |
+| `id`            | `string`        |  Identificador único de la matriz de riesgo.                |
 
-### Dirección
 
-Guarda el detalle de la dirección de un cliente.
+#### Response
+| Key               | Value    | Description                                            |
+| :---------------- | :---------- | :---------------------------------------------------|
+| `id`              | `string`  | Identificador único de la matriz de riesgo.           |
+| `name`            | `string`  | Nombre de la matriz de riesgo.                        |
+| `description`     | `string`  | Descripción de la matriz de riesgo.                   |
+| `catalog_id`      | `string`  | Identificador del catálogo asociado.                  |
+| `sections`        | `array`   | Secciones de la matriz de riesgo                      |
+| `rows`            | `number`  | Número de filas en la matriz de riesgo.               |
+| `columns`         | `number`  | Número de columnas en la matriz de riesgo.            |
+| `risk_thresholds` | `array`   | Umbrales de riesgo                                    |
+
+
+Edita una matriz de riesgo existente
 ```http
-  POST /onboarding/api/v0/licenses/{licenses_id}/clients/{client_id}/address
+  PUT /onboarding/api/v0/risk_matrix/{id}
 ```
-#### Donde:
-| Parameter         | Type        | Description                                                       |
-| :---------------- | :---------- | :---------------------------------------------------------------- |
-| `licenses_id`      | `string` | Clave única de la licencia perteneciente a la institución.          |
-| `client_id`  | `string` | Clave única del cliente perteneciente a la licencia.      |
+
+donde: 
+| Parameter       | Type            | Description                                                 |
+| :-------------- | :-------------- | :---------------------------------------------------------- |
+| `id`            | `string`        |  Identificador único de la matriz de riesgo.                |
+
 
 #### Body
 | Parameter         | Type        | Description                                                       |
 | :---------------- | :---------- | :---------------------------------------------------------------- |
-| `street`      | `string` | **Requerido**. Calle asociada al domicilio de un cliente. |
-| `number`      | `number` | **Requerido**. Número asociado al domicilio de un cliente. |
-| `city`      | `string` | **Requerido**. Ciudad asociada al domicilio de un cliente. |
-| `state`      | `string` | **Requerido**. Estado asociado al domicilio de un cliente. |
-| `locality`      | `string` | **Requerido**. Localidad o colonia asociada al domicilio de un cliente. |
-| `zipcode`      | `string` | **Requerido**. Código postal asociado al domicilio de un cliente. |
-| `country`      | `string` | **Requerido**. País asociado al domicilio de un cliente. |
+| `name`            | `string`    | **Requerido**. Nombre asociado a la matriz de riesgo.             |
+| `description`     | `string`    | **Requerido**. Descripción de la matriz de riesgo.                |
+
+#### Response
+| Key               | Value       | Description                                                         |
+| :---------------- | :---------- | :----------------------------------------------------------------   |
+| `status`          | `string`    |  Estado de la petición. Indica el resultado.                        |
+| `matrix`          | `object`    |  Objeto que contiene detalles de la matriz de riesgo.               |
+
+El objeto `matrix` contiene la siguiente información:
+
+| Key               | Value     | Description                                           |
+| :---------------- | :-------- | :---------------------------------------------------  |
+| `id`              | `string`  | Identificador único de la matriz de riesgo.           |
+| `name`            | `string`  | Nombre de la matriz de riesgo.                        |
+| `description`     | `string`  | Descripción de la matriz de riesgo.                   |
+| `catalog_id`      | `string`  | Identificador del catálogo asociado.                  |
+| `sections`        | `array`   | Secciones de la matriz de riesgo                      |
+| `rows`            | `number`  | Número de filas en la matriz de riesgo.               |
+| `columns`         | `number`  | Número de columnas en la matriz de riesgo.            |
+| `risk_thresholds` | `array`   | Umbrales de riesgo                                    |
+
+
+Elimina una matriz de riesgo
+```http
+  DELETE /onboarding/api/v0/risk_matrix/{id}
+```
+
+donde: 
+| Parameter       | Type            | Description                                                 |
+| :-------------- | :-------------- | :---------------------------------------------------------- |
+| `id`            | `string`        |  Identificador único de la matriz de riesgo.                |
+
+
+### Filas y columnas de una matriz de riesgo
+
+Edita las filas y columnas de una matriz de riesgo
+```http
+  PUT /onboarding/api/v0/risk_matrix/{id}/rows_columns
+```
+**Nota:** Cada vez que edites estos valores, los umbrales de riesgo o `risk_thresholds` se eliminarán y deberás crearlos nuevamente.
+
+donde: 
+| Parameter       | Type            | Description                                                 |
+| :-------------- | :-------------- | :---------------------------------------------------------- |
+| `id`            | `string`        |  Identificador único de la matriz de riesgo.                |
+
+#### Body
+| Parameter         | Type        | Description                                                       |
+| :---------------- | :---------- | :---------------------------------------------------------------- |
+| `columns`         | `number`    |   Número de columnas en la matriz de riesgo.                      |
+| `rows`            | `number`    |   Número de filas en la matriz de riesgo.                         |
+
+
+#### Response
+| Key               | Value       | Description                                                       |
+| :---------------- | :---------- | :---------------------------------------------------------------- |
+| `status`          | `string`    |  Estado de la petición. Indica el resultado.                      |
+| `matrix`          | `object`    |  Objeto que contiene detalles de la matriz de riesgo.             |
+
+El objeto `matrix` contiene la siguiente información:
+
+| Key               | Value     | Description                                           |
+| :---------------- | :-------- | :---------------------------------------------------  |
+| `id`              | `string`  | Identificador único de la matriz de riesgo.           |
+| `name`            | `string`  | Nombre de la matriz de riesgo.                        |
+| `description`     | `string`  | Descripción de la matriz de riesgo.                   |
+| `catalog_id`      | `string`  | Identificador del catálogo asociado.                  |
+| `sections`        | `array`   | Secciones de la matriz de riesgo                      |
+| `rows`            | `number`  | Número de filas en la matriz de riesgo.               |
+| `columns`         | `number`  | Número de columnas en la matriz de riesgo.            |
+| `risk_thresholds` | `array`   | Umbrales de riesgo                                    |
+
+
+### Umbrales de riesgo
+
+Crea un nuevo umbral de riesgo en la matriz
+```http
+  POST /onboarding/api/v0/risk_matrix/{id}/thresholds
+```
+
+donde: 
+| Parameter       | Type            | Description                                                 |
+| :-------------- | :-------------- | :---------------------------------------------------------- |
+| `id`            | `string`        |  Identificador único de la matriz de riesgo.                |
+
+#### Body
+| Parameter         | Type        | Description                                                       |
+| :---------------- | :---------- | :---------------------------------------------------------------- |
+| `name`        | `string`  | **Requerido**. Nombre del umbral de riesgo.                     |
+| `min`         | `number`  | **Requerido**. Valor mínimo del umbral de riesgo.               |
+| `max`         | `number`  | **Requerido**. Valor máximo del umbral de riesgo.               |
+
+#### Response
+| Key               | Value    | Description                                                          |
+| :---------------- | :---------- | :---------------------------------------------------------------- |
+| `status`          | `string`    |  Estado de la petición. Indica el resultado.                      |
+| `matrix`          | `object`    |  Objeto que contiene detalles de la matriz de riesgo.             |
+
+El objeto `matrix` contiene la siguiente información:
+
+| Key               | Value     | Description                                           |
+| :---------------- | :-------- | :---------------------------------------------------  |
+| `id`              | `string`  | Identificador único de la matriz de riesgo.           |
+| `name`            | `string`  | Nombre de la matriz de riesgo.                        |
+| `description`     | `string`  | Descripción de la matriz de riesgo.                   |
+| `catalog_id`      | `string`  | Identificador del catálogo asociado.                  |
+| `sections`        | `array`   | Secciones de la matriz de riesgo                      |
+| `rows`            | `number`  | Número de filas en la matriz de riesgo.               |
+| `columns`         | `number`  | Número de columnas en la matriz de riesgo.            |
+| `risk_thresholds` | `array`   | Umbrales de riesgo                                    |
+
+Cada Umbral de riesgo en `risk_thresholds` contiene:
+
+| Key               | Value     | Description                                                 |
+| :---------------- | :-------- | :---------------------------------------------------        |
+| `name`            | `string`  |  El nombre asociado al umbral de riesgo.                    |
+| `min`             | `number`  |  El valor mínimo del rango de riesgo asociado al umbral.    |
+| `max`             | `number`  |   El valor máximo del rango de riesgo asociado al umbral.   |
+
+Elimina un umbral de riesgo de la matriz
+```http
+  DELETE /onboarding/api/v0/risk_matrix/{id}/thresholds?name={umbral}
+```
+
+donde: 
+| Parameter       | Type            | Description                                                 |
+| :-------------- | :-------------- | :---------------------------------------------------------- |
+| `id`            | `string`        |  Identificador único de la matriz de riesgo.                |
+| `umbral`        | `string`    |  Nombre del umbral de riesgo a eliminar.                        |
+
+#### Response
+| Key               | Value    | Description                                                          |
+| :---------------- | :---------- | :---------------------------------------------------------------- |
+| `status`          | `string`    |  Estado de la petición. Indica el resultado.                      |
+| `matrix`          | `object`    |  Objeto que contiene detalles de la matriz de riesgo.             |
+
+El objeto `matrix` contiene la siguiente información:
+
+| Key               | Value     | Description                                           |
+| :---------------- | :-------- | :---------------------------------------------------  |
+| `id`              | `string`  | Identificador único de la matriz de riesgo.           |
+| `name`            | `string`  | Nombre de la matriz de riesgo.                        |
+| `description`     | `string`  | Descripción de la matriz de riesgo.                   |
+| `catalog_id`      | `string`  | Identificador del catálogo asociado.                  |
+| `sections`        | `array`   | Secciones de la matriz de riesgo                      |
+| `rows`            | `number`  | Número de filas en la matriz de riesgo.               |
+| `columns`         | `number`  | Número de columnas en la matriz de riesgo.            |
+| `risk_thresholds` | `array`   | Umbrales de riesgo                                    |
+
+
+
+### Secciones de una matriz de riesgo
+
+Crea una nueva sección en la matriz de riesgo
+```http
+  POST /onboarding/api/v0/risk_matrix/{id}/sections
+```
+
+donde: 
+| Parameter       | Type            | Description                                                 |
+| :-------------- | :-------------- | :---------------------------------------------------------- |
+| `id`            | `string`        |  Identificador único de la matriz de riesgo.                |
+
+#### Body
+| Parameter         | Type        | Description                                                       |
+| :---------------- | :---------- | :---------------------------------------------------------------- |
+| `name`            | `string`  | **Requerido**. Nombre de la sección                                   |
+| `weighting`       | `number`  | **Requerido**. Peso o ponderación de la sección sobre la matriz de riesgo. **Este valor debe estar entre 0 y 1** |
 
 #### Response
 | Key               | Value    | Description                                                      |
 | :---------------- | :---------- | :---------------------------------------------------------------- |
-| `street`      | `string` |  Calle asociada al domicilio de un cliente. |
-| `number`      | `number` | Número asociado al domicilio de un cliente. |
-| `city`      | `string` |  Ciudad asociada al domicilio de un cliente. |
-| `state`      | `string` |  Estado asociado al domicilio de un cliente. |
-| `locality`      | `string` | Localidad o colonia asociada al domicilio de un cliente. |
-| `zipcode`      | `string` | Código postal asociado al domicilio de un cliente. |
-| `country`      | `string` |  País asociado al domicilio de un cliente. |
+| `status`          | `string`    |  Estado de la petición. Indica el resultado. |
+| `matrix`          | `object`    |  Objeto que contiene detalles de la matriz de riesgo. |
+
+El objeto `matrix` contiene la siguiente información:
+
+| Key               | Value     | Description                                           |
+| :---------------- | :-------- | :---------------------------------------------------  |
+| `id`              | `string`  | Identificador único de la matriz de riesgo.           |
+| `name`            | `string`  | Nombre de la matriz de riesgo.                        |
+| `description`     | `string`  | Descripción de la matriz de riesgo.                   |
+| `catalog_id`      | `string`  | Identificador del catálogo asociado.                  |
+| `sections`        | `array`   | Secciones de la matriz de riesgo                      |
+| `rows`            | `number`  | Número de filas en la matriz de riesgo.               |
+| `columns`         | `number`  | Número de columnas en la matriz de riesgo.            |
+| `risk_thresholds` | `array`   | Umbrales de riesgo                                    |
+
+Cada sección en `sections` contiene:
+
+| Key               | Value     | Description                                                 |
+| :---------------- | :-------- | :---------------------------------------------------        |
+| `id`              | `string`  | Identificador único de la sección en la matriz ede riesgo.  |
+| `name`            | `number`  | Nombre de la matriz de sección.                             |
+| `weighting`       | `string`  | Peso o ponderación de la sección sobre la matriz de riesgo. |
+| `fields`          | `array`   | Lista de campos en la sección.                              |
+
+Cada campo en `fields` contiene:
+
+| Key               | Value     | Description                                           |
+| :---------------- | :-------- | :---------------------------------------------------  |
+| `catalog_field_id`| `string`  | Identificador único de un campo de un catálogo.       |
+| `weighting`       | `any`     | Peso o ponderación del campo sobre la sección         |
 
 
-Recupera el detalle de la dirección de un cliente.
+
+Edita una seccion 
 ```http
-  GET /onboarding/api/v0/licenses/{licenses_id}/clients/{client_id}/address
+  PUT /onboarding/api/v0/risk_matrix/{id}/sections/{section_id}
 ```
-#### Donde:
+
+donde: 
+| Parameter       | Type            | Description                                                 |
+| :-------------- | :-------------- | :---------------------------------------------------------- |
+| `id`            | `string`        |  Identificador único de la matriz de riesgo.                |
+| `section_id`    | `string`        |  Identificador único de la seccion                          |
+
+#### Body
 | Parameter         | Type        | Description                                                       |
 | :---------------- | :---------- | :---------------------------------------------------------------- |
-| `licenses_id`      | `string` | Clave única de la licencia perteneciente a la institución.          |
-| `client_id`  | `string` | Clave única del cliente perteneciente a la licencia.      |
+| `name`            | `string`  | **Requerido**. Nombre de la sección                     |
+| `weighting`       | `number`  | **Requerido**. Peso o ponderación de la sección sobre la matriz de riesgo          |
 
 #### Response
-| Key               | Value    | Description                                                         |
+| Key               | Value    | Description                                                      |
 | :---------------- | :---------- | :---------------------------------------------------------------- |
-| `street`      | `string` | Calle asociada al domicilio de un cliente. |
-| `number`      | `number` |  Número asociado al domicilio de un cliente. |
-| `city`      | `string` | Ciudad asociada al domicilio de un cliente. |
-| `state`      | `string` |  Estado asociado al domicilio de un cliente. |
-| `locality`      | `string` | Localidad o colonia asociada al domicilio de un cliente. |
-| `zipcode`      | `string` | Código postal asociado al domicilio de un cliente. |
-| `country`      | `string` |  País asociado al domicilio de un cliente. |
+| `status`          | `string`    |  Estado de la petición. Indica el resultado. |
+| `matrix`          | `object`    |  Objeto que contiene detalles de la matriz de riesgo. |
 
-Elimina el detalle de la dirección de un cliente.
+El objeto `matrix` contiene la siguiente información:
+
+| Key               | Value     | Description                                           |
+| :---------------- | :-------- | :---------------------------------------------------  |
+| `id`              | `string`  | Identificador único de la matriz de riesgo.           |
+| `name`            | `string`  | Nombre de la matriz de riesgo.                        |
+| `description`     | `string`  | Descripción de la matriz de riesgo.                   |
+| `catalog_id`      | `string`  | Identificador del catálogo asociado.                  |
+| `sections`        | `array`   | Secciones de la matriz de riesgo                      |
+| `rows`            | `number`  | Número de filas en la matriz de riesgo.               |
+| `columns`         | `number`  | Número de columnas en la matriz de riesgo.            |
+| `risk_thresholds` | `array`   | Umbrales de riesgo                                    |
+
+Cada sección en `sections` contiene:
+
+| Key               | Value     | Description                                                 |
+| :---------------- | :-------- | :---------------------------------------------------        |
+| `id`              | `string`  | Identificador único de la sección en la matriz ede riesgo.  |
+| `name`            | `number`  | Nombre de la matriz de sección.                             |
+| `weighting`       | `string`  | Peso o ponderación de la sección sobre la matriz de riesgo. |
+| `fields`          | `array`   | Lista de campos en la sección.                              |
+
+Cada campo en `fields` contiene:
+
+| Key               | Value     | Description                                           |
+| :---------------- | :-------- | :---------------------------------------------------  |
+| `catalog_field_id`| `string`  | Identificador único de un campo de un catálogo.       |
+| `weighting`       | `any`     | Peso o ponderación del campo sobre la sección         |
+
+
+
+Elimina una seccion de una matriz de riesgo 
 ```http
-  DELETE /onboarding/api/v0/licenses/{licenses_id}/clients/{client_id}/address
+  DELETE /onboarding/api/v0/risk_matrix/{id}/sections/{section_id}
 ```
-#### Donde:
-| Parameter         | Type        | Description                                                       |
+
+donde: 
+| Parameter       | Type            | Description                                                 |
+| :-------------- | :-------------- | :---------------------------------------------------------- |
+| `id`            | `string`        |  Identificador único de la matriz de riesgo.                |
+| `section_id`    | `string`        |  Identificador único de la seccion                          |
+
+
+#### Response
+| Key               | Value    | Description                                                      |
 | :---------------- | :---------- | :---------------------------------------------------------------- |
-| `licenses_id`      | `string` | Clave única de la licencia perteneciente a la institución.          |
-| `client_id`  | `string` | Clave única del cliente perteneciente a la licencia.      |
+| `status`          | `string`    |  Estado de la petición. Indica el resultado. |
+| `matrix`          | `object`    |  Objeto que contiene detalles de la matriz de riesgo. |
 
-### Comprobante de domicilio 
+El objeto `matrix` contiene la siguiente información:
 
-Guarda el detalle del comprobante de domicilio de un cliente TELMEX y CFE son aceptados.
+| Key               | Value     | Description                                           |
+| :---------------- | :-------- | :---------------------------------------------------  |
+| `id`              | `string`  | Identificador único de la matriz de riesgo.           |
+| `name`            | `string`  | Nombre de la matriz de riesgo.                        |
+| `description`     | `string`  | Descripción de la matriz de riesgo.                   |
+| `catalog_id`      | `string`  | Identificador del catálogo asociado.                  |
+| `sections`        | `array`   | Secciones de la matriz de riesgo                      |
+| `rows`            | `number`  | Número de filas en la matriz de riesgo.               |
+| `columns`         | `number`  | Número de columnas en la matriz de riesgo.            |
+| `risk_thresholds` | `array`   | Umbrales de riesgo                                    |
+
+Cada sección en `sections` contiene:
+
+| Key               | Value     | Description                                                 |
+| :---------------- | :-------- | :---------------------------------------------------        |
+| `id`              | `string`  | Identificador único de la sección en la matriz ede riesgo.  |
+| `name`            | `number`  | Nombre de la matriz de sección.                             |
+| `weighting`       | `string`  | Peso o ponderación de la sección sobre la matriz de riesgo. |
+| `fields`          | `array`   | Lista de campos en la sección.                              |
+
+Cada campo en `fields` contiene:
+
+| Key               | Value     | Description                                           |
+| :---------------- | :-------- | :---------------------------------------------------  |
+| `catalog_field_id`| `string`  | Identificador único de un campo de un catálogo.       |
+| `weighting`       | `any`     | Peso o ponderación del campo sobre la sección         |
+
+
+### Campos de una seccion
+
+Crea un nuevo campo en la sección
 ```http
-  POST /onboarding/api/v0/licenses/{licenses_id}/clients/{client_id}/address_proof
+  POST /onboarding/api/v0/risk_matrix/sections/{section_id}/fields
 ```
-#### Donde:
-| Parameter         | Type        | Description                                                       |
-| :---------------- | :---------- | :---------------------------------------------------------------- |
-| `licenses_id`      | `string` | Clave única de la licencia perteneciente a la institución.          |
-| `client_id`  | `string` | Clave única del cliente perteneciente a la licencia.      |
 
-#### Body TELMEX
+donde: 
+| Parameter       | Type            | Description                                                 |
+| :-------------- | :-------------- | :---------------------------------------------------------- |
+| `section_id`    | `string`        |  Identificador único de la sección                          |
+
+#### Body
 | Parameter         | Type        | Description                                                       |
 | :---------------- | :---------- | :---------------------------------------------------------------- |
-| `name`      | `string` | **Requerido**. Nombre asociado al recibo TELMEX. |
-| `address`      | `string` | **Requerido**. Dirección asociada al recibo TELMEX. |
-| `date`      | `string` | **Requerido**. Fecha del recibo TELMEX. |
-| `bill`      | `string` | **Requerido**. Número de factura del recibo TELMEX. |
-| `phone_num`      | `string` | **Requerido**. Número de telefono del recibo TELMEX. |
-#### Body CFE
-| Parameter         | Type        | Description                                                       |
+| `catalog_field_id` | `string`  | **Requerido**. Identificador único de un campo de un catálogo.                 |
+| `weighting`        | `number` | **Requerido**. Peso o ponderación de la sección sobre la matriz de riesgo  **Este valor debe estar entre 0 y 1**        |
+
+**Nota:** El valor de `catalog_field_id` debe corresponder a un campo (ID) existente en el catálogo asociado a la matriz de riesgo pertinente a esta sección.
+ Para llevar a cabo este proceso, se recomienda crear primero un campo en el catalogo asociado a la matriz para obtener su identificador único (ID) y luego generar un campo dentro de la sección correspondiente utilizando dicho ID. Este enfoque garantizará la coherencia y la integridad de los datos en la matriz de riesgo.  
+
+
+#### Response
+| Key               | Value    | Description                                                      |
 | :---------------- | :---------- | :---------------------------------------------------------------- |
-| `name`      | `string` | **Requerido**. Nombre asociado al recibo CFE. |
-| `service_no`      | `string` | **Requerido**. Número de servicio asociado al recibo CFE. |
-| `rmu`      | `string` | **Requerido**. RMU del recibo CFE. |
-| `date`      | `string` | **Requerido**. Fecha limite de pago del recibo CFE. |
-| `wattmeter`      | `string` | **Requerido**. Número de medidor que aparece en el recibo CFE. |
-| `rate`      | `string` | **Requerido**. Tarifa del recibo CFE. |
-| `address`      | `string` | **Requerido**. Domicilio que asociado al recibo CFE. |
-#### Response TELMEX
-| Key               | Value    | Description                                                     |
-| :---------------- | :---------- | :---------------------------------------------------------------- |
-| `name`      | `string` | Nombre asociado al recibo TELMEX. |
-| `address`      | `string` | Dirección asociada al recibo TELMEX. |
-| `date`      | `string` | Fecha del recibo TELMEX. |
-| `bill`      | `string` | Número de factura del recibo TELMEX. |
-| `phone_num`      | `string` |  Número de telefono del recibo TELMEX. |
- #### Response CFE
-| Key               | Value    | Description                                              |
-| :---------------- | :---------- | :---------------------------------------------------------------- |
-| `name`      | `string` |  Nombre asociado al recibo CFE. |
-| `service_no`      | `string` | Número de servicio asociado al recibo CFE. |
-| `rmu`      | `string` | RMU del recibo CFE. |
-| `date`      | `string` | Fecha limite de pago del recibo CFE. |
-| `wattmeter`      | `string` |  Número de medidor que aparece en el recibo CFE. |
-| `rate`      | `string` |  Tarifa del recibo CFE. |
-| `address`      | `string` |  Domicilio que asociado al recibo CFE. |
- 
-Recupera el detalle del comprobante de domicilio de un cliente.
+| `status`          | `string`    |  Estado de la petición. Indica el resultado. |
+| `matrix`          | `object`    |  Objeto que contiene detalles de la matriz de riesgo. |
+
+El objeto `matrix` contiene la siguiente información:
+
+| Key               | Value     | Description                                           |
+| :---------------- | :-------- | :---------------------------------------------------  |
+| `id`              | `string`  | Identificador único de la matriz de riesgo.           |
+| `name`            | `string`  | Nombre de la matriz de riesgo.                        |
+| `description`     | `string`  | Descripción de la matriz de riesgo.                   |
+| `catalog_id`      | `string`  | Identificador del catálogo asociado.                  |
+| `sections`        | `array`   | Secciones de la matriz de riesgo                      |
+| `rows`            | `number`  | Número de filas en la matriz de riesgo.               |
+| `columns`         | `number`  | Número de columnas en la matriz de riesgo.            |
+| `risk_thresholds` | `array`   | Umbrales de riesgo                                    |
+
+Cada sección en `sections` contiene:
+
+| Key               | Value     | Description                                                 |
+| :---------------- | :-------- | :---------------------------------------------------        |
+| `id`              | `string`  | Identificador único de la sección en la matriz ede riesgo.  |
+| `name`            | `number`  | Nombre de la matriz de sección.                             |
+| `weighting`       | `string`  | Peso o ponderación de la sección sobre la matriz de riesgo. |
+| `fields`          | `array`   | Lista de campos en la sección.                              |
+
+Cada campo en `fields` contiene:
+
+| Key               | Value     | Description                                           |
+| :---------------- | :-------- | :---------------------------------------------------  |
+| `catalog_field_id`| `string`  | Identificador único de un campo de un catálogo.       |
+| `weighting`       | `any`     | Peso o ponderación del campo sobre la sección         |
+
+
+Elimina un campo de una sección
 ```http
-  GET /onboarding/api/v0/licenses/{licenses_id}/clients/{client_id}/address_proof
+  DELETE /onboarding/api/v0/risk_matrix/sections/{section_id}/fields?catalog_field_id={catalog_field_id}
 ```
-#### Donde:
+
+donde: 
+| Parameter       | Type            | Description                                                 |
+| :-------------- | :-------------- | :---------------------------------------------------------- |
+| `section_id`    | `string`        |  Identificador único de la sección                          |
+| `catalog_field_id` | `string`     |  Identificador único de un campo de un catálogo asociado a la sección a eliminar          |
+
+
+### Catalogos
+
+Crea un nuevo catalogo
+```http
+  POST /onboarding/api/v0/risk_matrix/catalogs
+```
+
+#### Body
 | Parameter         | Type        | Description                                                       |
 | :---------------- | :---------- | :---------------------------------------------------------------- |
-| `licenses_id`      | `string` | Clave única de la licencia perteneciente a la institución.          |
-| `client_id`  | `string` | Clave única del cliente perteneciente a la licencia.      |
+| `name`            | `string`    | **Requerido**. Nombre del catalogo                                |
 
-#### Response TELMEX
-| Key               | Value    | Description                                                        |
-| :---------------- | :---------- | :---------------------------------------------------------------- |
-| `name`      | `string` |  Nombre asociado al recibo TELMEX. |
-| `address`      | `string` |  Dirección asociada al recibo TELMEX. |
-| `date`      | `string` | Fecha del recibo TELMEX. |
-| `bill`      | `string` |  Número de factura del recibo TELMEX. |
-| `phone_num`      | `string` |  Número de telefono del recibo TELMEX. |
-#### Response CFE
+#### Response
+| Key               | Value       | Description                                                          |
+| :---------------- | :---------- | :----------------------------------------------------------------    |
+| `status`          | `string`    | Estado de la petición. Indica el resultado.                          |
+| `catalog`         | `object`    | Objeto que contiene detalles del catálogo.                           |
+
+El objeto `catalog` contiene la siguiente información:
+
+| Key               | Value     | Description                                           |
+| :---------------- | :-------- | :---------------------------------------------------  |
+| `id`              | `string`  | Identificador único del catálogo.                     |
+| `name`            | `string`  | Nombre del catálogo.                                  |
+| `fields`          | `array`   | Lista de campos del catálogo.                         |
+
+
+Obtener un catalogo existente
+```http
+  GET /onboarding/api/v0/risk_matrix/catalogs/{id}
+```
+
+donde: 
+| Parameter       | Type            | Description                                                 |
+| :-------------- | :-------------- | :---------------------------------------------------------- |
+| `id`            | `string`        |  Identificador único del catalogo                           |
+
+#### Response
 | Key               | Value    | Description                                                          |
 | :---------------- | :---------- | :---------------------------------------------------------------- |
-| `name`      | `string` |  Nombre asociado al recibo CFE. |
-| `service_no`      | `string` |  Número de servicio asociado al recibo CFE. |
-| `rmu`      | `string` |  RMU del recibo CFE. |
-| `date`      | `string` | Fecha limite de pago del recibo CFE. |
-| `wattmeter`      | `string` | Número de medidor que aparece en el recibo CFE. |
-| `rate`      | `string` | Tarifa del recibo CFE. |
-| `address`      | `string` | Domicilio que asociado al recibo CFE. |
+| `status`          | `string`  | Estado de la petición. Indica el resultado.                         |
+| `catalog`         | `object`  | Objeto que contiene detalles del catálogo.                          |
 
-Modifica el detalle del comprobante de domicilio de un cliente.
+El objeto `catalog` contiene la siguiente información:
+
+| Key               | Value     | Description                                           |
+| :---------------- | :-------- | :---------------------------------------------------  |
+| `id`              | `string`  | Identificador único del catálogo.                     |
+| `name`            | `string`  | Nombre del catálogo.                                  |
+| `fields`          | `array`   | Lista de campos del catálogo.                         |
+
+
+Editar un catalogo existente
 ```http
-  PUT /onboarding/api/v0/licenses/{licenses_id}/clients/{client_id}/address_proof
+  PUT /onboarding/api/v0/risk_matrix/catalogs/{id}
 ```
-#### Donde:
+
+donde: 
+| Parameter       | Type            | Description                                                 |
+| :-------------- | :-------------- | :---------------------------------------------------------- |
+| `id`            | `string`        |  Identificador único del catalogo                           |
+
+#### Body
 | Parameter         | Type        | Description                                                       |
 | :---------------- | :---------- | :---------------------------------------------------------------- |
-| `licenses_id`      | `string` | Clave única de la licencia perteneciente a la institución.          |
-| `client_id`  | `string` | Clave única del cliente perteneciente a la licencia.      |
-
-#### Body TELMEX
-| Parameter         | Type        | Description                                                       |
-| :---------------- | :---------- | :---------------------------------------------------------------- |
-| `data`      | `json` | **Requerido**. Clave que contiene todos los datos a modificar, el resto de las claves descritas en este apartado deben ir dentro de este valor. |
-| `name`      | `string` | **Requerido**. Nombre asociado al recibo TELMEX. |
-| `address`      | `string` | **Requerido**. Dirección asociada al recibo TELMEX. |
-| `date`      | `string` | **Requerido**. Fecha del recibo TELMEX. |
-| `bill`      | `string` | **Requerido**. Número de factura del recibo TELMEX. |
-| `phone_num`      | `string` | **Requerido**. Número de telefono del recibo TELMEX. |
-#### Body CFE
-| Parameter         | Type        | Description                                                       |
-| :---------------- | :---------- | :---------------------------------------------------------------- |
-| `data`      | `json` | **Requerido**. Clave que contiene todos los datos a modificar, el resto de las claves descritas en este apartado deben ir dentro de este valor. |
-| `name`      | `string` | **Requerido**. Nombre asociado al recibo CFE. |
-| `service_no`      | `string` | **Requerido**. Número de servicio asociado al recibo CFE. |
-| `rmu`      | `string` | **Requerido**. RMU del recibo CFE. |
-| `date`      | `string` | **Requerido**. Fecha limite de pago del recibo CFE. |
-| `wattmeter`      | `string` | **Requerido**. Número de medidor que aparece en el recibo CFE. |
-| `rate`      | `string` | **Requerido**. Tarifa del recibo CFE. |
-| `address`      | `string` | **Requerido**. Domicilio que asociado al recibo CFE. |
-#### Response TELMEX
-| Key               | Value    | Description                                                     |
-| :---------------- | :---------- | :---------------------------------------------------------------- |
-| `name`      | `string` |  Nombre asociado al recibo TELMEX. |
-| `address`      | `string` |  Dirección asociada al recibo TELMEX. |
-| `date`      | `string` |  Fecha del recibo TELMEX. |
-| `bill`      | `string` | Número de factura del recibo TELMEX. |
-| `phone_num`      | `string` | Número de telefono del recibo TELMEX. |
-
- #### Response CFE
-| Key               | Value    | Description                                              |
-| :---------------- | :---------- | :---------------------------------------------------------------- |
-| `name`      | `string` |  Nombre asociado al recibo CFE. |
-| `service_no`      | `string` | Número de servicio asociado al recibo CFE. |
-| `rmu`      | `string` | RMU del recibo CFE. |
-| `date`      | `string` | Fecha limite de pago del recibo CFE. |
-| `wattmeter`      | `string` |  Número de medidor que aparece en el recibo CFE. |
-| `rate`      | `string` | Tarifa del recibo CFE. |
-| `address`      | `string` | Domicilio que asociado al recibo CFE. |
-
-Elimina el detalle del comprobante de domicilio de un cliente.
-```http
-  DELETE /onboarding/api/v0/licenses/{licenses_id}/clients/{client_id}/address_proof
-```
-#### Donde:
-| Parameter         | Type        | Description                                                       |
-| :---------------- | :---------- | :---------------------------------------------------------------- |
-| `licenses_id`      | `string` | Clave única de la licencia perteneciente a la institución.          |
-| `client_id`  | `string` | Clave única del cliente perteneciente a la licencia.      |
-
-### Identificaciones 
-
-Guarda el detalle de las identificaciones de un cliente INE de tipo C, DEF y GH son aceptados.
-```http
-  POST /onboarding/api/v0/licenses/{licenses_id}/clients/{client_id}/id
-```
-#### Donde:
-| Parameter         | Type        | Description                                                       |
-| :---------------- | :---------- | :---------------------------------------------------------------- |
-| `licenses_id`      | `string` | Clave única de la licencia perteneciente a la institución.          |
-| `client_id`  | `string` | Clave única del cliente perteneciente a la licencia.      |
-
-#### Body INE tipo C
-| Parameter         | Type        | Description                                                       |
-| :---------------- | :---------- | :---------------------------------------------------------------- |
-| `lastname`      | `string` | **Requerido**. Apellido paterno que aparece en la INE del cliente. |
-| `surname`      | `string` | **Requerido**. Apellido materno que aparece en la INE del cliente. |
-| `name`      | `string` | **Requerido**. Nombre que aparece en la INE del cliente. |
-| `address`      | `string` | **Requerido**. Domicilio que aparece en la INE del cliente. |
-| `gender`      | `string` | **Requerido**. Sexo que aparece en la INE del cliente. |
-| `key`      | `string` | **Requerido**. Clave de elector del cliente. |
-| `curp`      | `string` | **Requerido**. CURP que aparece en la INE del cliente. |
-| `regDate`      | `string` | **Requerido**. Fecha de registro del cliente ante INE. |
-| `age`      | `string` | **Requerido**. Edad del cliente a la fecha de emisión de la identificación. |
-| `section`      | `string` | **Requerido**. Sección a la que pertenece la INE del cliente. |
-| `validity`      | `string` | **Requerido**. Año de validación de la INE. |
-| `state`      | `string` | **Requerido**. Estado al que pertenece la INE del cliente. |
-| `town`      | `string` | **Requerido**. Ciudad a la que pertenece la INE del cliente. |
-| `locality`      | `string` | **Requerido**. Localidad a la que pertenece la INE del cliente. |
-| `issue`      | `string` | **Requerido**. Fecha de emisión al que pertenece la INE del cliente. |
-| `folio`      | `string` | **Requerido**. Folio asociado a la INE del cliente. |
-    
-#### Body INE tipo DEF
-| Parameter         | Type        | Description                                                       |
-| :---------------- | :---------- | :---------------------------------------------------------------- |
-| `lastname`      | `string` | **Requerido**. Apellido paterno que aparece en la INE del cliente. |
-| `surname`      | `string` | **Requerido**. Apellido materno que aparece en la INE del cliente. |
-| `name`      | `string` | **Requerido**. Nombre que aparece en la INE del cliente. |
-| `address`      | `string` | **Requerido**. Domicilio que aparece en la INE del cliente. |
-| `gender`      | `string` | **Requerido**. Sexo que aparece en la INE del cliente. |
-| `key`      | `string` | **Requerido**. Clave de elector del cliente. |
-| `curp`      | `string` | **Requerido**. CURP que aparece en la INE del cliente. |
-| `regDate`      | `string` | **Requerido**. Fecha de registro del cliente ante INE. |
-| `birthdate`      | `string` | **Requerido**. Fecha de nacimiento del cliente. |
-| `section`      | `string` | **Requerido**. Sección a la que pertenece la INE del cliente. |
-| `validity`      | `string` | **Requerido**. Año de validación de la INE. |
-| `state`      | `string` | **Requerido**. Estado al que pertenece la INE del cliente. |
-| `town`      | `string` | **Requerido**. Ciudad a la que pertenece la INE del cliente. |
-| `locality`      | `string` | **Requerido**. Localidad a la que pertenece la INE del cliente. |
-| `issue`      | `string` | **Requerido**. Fecha de emisión al que pertenece la INE del cliente. |
-
-#### Body INE tipo GH
-| Parameter         | Type        | Description                                                       |
-| :---------------- | :---------- | :---------------------------------------------------------------- |
-| `lastname`      | `string` | **Requerido**. Apellido paterno que aparece en la INE del cliente. |
-| `surname`      | `string` | **Requerido**. Apellido materno que aparece en la INE del cliente. |
-| `name`      | `string` | **Requerido**. Nombre que aparece en la INE del cliente. |
-| `address`      | `string` | **Requerido**. Domicilio que aparece en la INE del cliente. |
-| `gender`      | `string` | **Requerido**. Sexo que aparece en la INE del cliente. |
-| `key`      | `string` | **Requerido**. Clave de elector del cliente. |
-| `curp`      | `string` | **Requerido**. CURP que aparece en la INE del cliente. |
-| `regDate`      | `string` | **Requerido**. Fecha de registro del cliente ante INE. |
-| `birthdate`      | `string` | **Requerido**. Fecha de nacimiento del cliente. |
-| `section`      | `string` | **Requerido**. Sección a la que pertenece la INE del cliente. |
-| `validity`      | `string` | **Requerido**. Año de validación de la INE. |
-#### Response INE
-| Key        | Type           | Description                                                      |
-| :---------------- | :---------- | :---------------------------------------------------------------- |
-| `identification_id`      | `string` | ID unico asociado a la identificación. |
-| `type`      | `string` | Tipo de identificacioón. |
-| `front`      | `json` |  Conjunto de información que aparece en la parte frontal de la INE. |
-| `back`      | `json` |  Conjunto de información que aparece en la parte trasera de la INE. |
-| `created_at`        | `date`         | Fecha de creación de la aplicación         |
-| `updated_at`        | `date`         | Fecha de modificación de la aplicación     |
-
-
-Recupera el detalle de todas las identificaciones de un cliente.
-```http
-  GET /onboarding/api/v0/licenses/{licenses_id}/clients/{client_id}/id
-```
-#### Donde:
-| Parameter         | Type        | Description                                                       |
-| :---------------- | :---------- | :---------------------------------------------------------------- |
-| `licenses_id`      | `string` | Clave única de la licencia perteneciente a la institución.          |
-| `client_id`  | `string` | Clave única del cliente perteneciente a la licencia.      |
-
-#### Response 
-| Key        | Type           | Description                                                      |
-| :---------------- | :---------- | :---------------------------------------------------------------- |
-| `identification_id`      | `string` | ID unico asociado a la identificación. |
-| `type`      | `string` |  Tipo de identificacioón. |
-| `front`      | `json` |  Conjunto de información que aparece en la parte frontal de la INE. |
-| `back`      | `json` | Conjunto de información que aparece en la parte trasera de la INE. |
-| `created_at`        | `date`         | Fecha de creación de la aplicación         |
-| `updated_at`        | `date`         | Fecha de modificación de la aplicación     |
-
-Recupera el detalle de una identificación de un cliente.
-```http
-  GET /onboarding/api/v0/licenses/{licenses_id}/clients/{client_id}/id/{identification_id}
-```
-#### Donde:
-| Parameter         | Type        | Description                                                       |
-| :---------------- | :---------- | :---------------------------------------------------------------- |
-| `licenses_id`      | `string` | Clave única de la licencia perteneciente a la institución.          |
-| `client_id`  | `string` | Clave única del cliente perteneciente a la licencia.      |
-| `identification_id`  | `string` | Clave única de la identificación perteneciente al cliente.      |
+| `name`            | `string`    |  Nombre del catalogo                                              |
 
 #### Response
-| Key        | Type           | Description                                                      |
+| Key               | Value    | Description                                                          |
 | :---------------- | :---------- | :---------------------------------------------------------------- |
-| `identification_id`      | `string` |  ID unico asociado a la identificación. |
-| `type`      | `string` | Tipo de identificacioón. |
-| `front`      | `json` | Conjunto de información que aparece en la parte frontal de la INE. |
-| `back`      | `json` | Conjunto de información que aparece en la parte trasera de la INE. |
-| `created_at`        | `date`         | Fecha de creación de la aplicación         |
-| `updated_at`        | `date`         | Fecha de modificación de la aplicación     |
+| `status`          | `string`  | Estado de la petición. Indica el resultado.                         |
+| `catalog`         | `object`  | Objeto que contiene detalles del catálogo.                          |        
+
+El objeto `catalog` contiene la siguiente información:
+
+| Key               | Value     | Description                                           |
+| :---------------- | :-------- | :---------------------------------------------------  |
+| `id`              | `string`  | Identificador único del catálogo.                     |
+| `name`            | `string`  | Nombre del catálogo.                                  |
+| `fields`          | `array`   | Lista de campos del catálogo.                         |
 
 
-Guarda el detalle de la parte trasera de la identificacioón de un cliente.
+Elimina un catalogo existente
 ```http
-  PUT /onboarding/api/v0/licenses/{licenses_id}/clients/{client_id}/id/{identification_id}/back
+  DELETE /onboarding/api/v0/risk_matrix/catalogs/{id}
 ```
-#### Donde:
-| Parameter         | Type        | Description                                                       |
-| :---------------- | :---------- | :---------------------------------------------------------------- |
-| `licenses_id`      | `string` | Clave única de la licencia perteneciente a la institución.          |
-| `client_id`  | `string` | Clave única del cliente perteneciente a la licencia.      |
-| `identification_id`  | `string` | Clave única de la identificación perteneciente al cliente.      |
-#### Body tipo DEF y GH
-| Parameter         | Type        | Description                                                       |
-| :---------------- | :---------- | :---------------------------------------------------------------- |
-| `data`      | `json` | **Requerido**. Clave que contiene todos los datos a modificar, el resto de las claves descritas en este apartado deben ir dentro de este valor. |
-| `lastname`      | `string` | **Requerido**. Apellido paterno que aparece en la INE del cliente. |
-| `surname`      | `string` | **Requerido**. Apellido materno que aparece en la INE del cliente. |
-| `name`      | `string` | **Requerido**. Nombre que aparece en la INE del cliente. |
-| `birth_date`      | `string` | **Requerido**. Fecha de nacimiento del cliente. |
-| `gender`      | `string` | **Requerido**. Sexo que aparece en la INE del cliente. |
-| `expiry_date`      | `string` | **Requerido**. Fecha de expiración de la INE del cliente. |
-| `nationality`      | `string` | **Requerido**. Nacionalidad del cliente. |
-| `issue_number`      | `string` | **Requerido**. Número de expedición de la INE del cliente. |
-| `FUAR`      | `string` | **Requerido**. FUAR de la INE del cliente. |
-| `check_digit`      | `string` | **Requerido**. Dígito de verificación la INE del cliente. |
-| `type`      | `string` | **Requerido**. Tipo de documento. |
-| `country`      | `string` | **Requerido**. País de expedición de la INE. |
-| `cic`      | `string` | **Requerido**. CIC de la INE. |
-| `cic_id`      | `string` | **Requerido**. ID perteneciente al CIC de la INE. |
-| `ocr`      | `string` | **Requerido**. OCR de la INE. |
-| `citizenID`      | `string` | **Requerido**. Clave de ciudadano asociado a la INE. |
-| `section`      | `string` | **Requerido**. Sección a la que pertenece el cliente. |
-#### Body tipo C
-| Parameter         | Type        | Description                                                       |
-| :---------------- | :---------- | :---------------------------------------------------------------- |
-| `data`      | `json` | **Requerido**. Clave que contiene todos los datos a modificar, el resto de las claves descritas en este apartado deben ir dentro de este valor. |
-| `ocr`      | `string` | **Requerido**. OCR asociado a la INE del cliente. |
 
-#### Response 
-| Key        | Type           | Description                                                      |
-| :---------------- | :---------- | :---------------------------------------------------------------- |
-| `identification_id`      | `string` | ID unico asociado a la identificación. |
-| `type`      | `string` |  Tipo de identificacioón. |
-| `front`      | `json` | Conjunto de información que aparece en la parte frontal de la INE. |
-| `back`      | `json` |  Conjunto de información que aparece en la parte trasera de la INE. |
-| `created_at`        | `date`         | Fecha de creación de la aplicación         |
-| `updated_at`        | `date`         | Fecha de modificación de la aplicación     |
+donde: 
+| Parameter       | Type            | Description                                                 |
+| :-------------- | :-------------- | :---------------------------------------------------------- |
+| `id`            | `string`        |  Identificador único del catalogo                           |
 
-Modifica el detalle de las identificaciones de un cliente.
+
+### Campos de un catalogo
+
+Crea un nuevo campo en el catalogo
 ```http
-  PUT /onboarding/api/v0/licenses/{licenses_id}/clients/{client_id}/id/{identification_id}
+  POST /onboarding/api/v0/risk_matrix/catalogs/{id}/fields
 ```
-#### Donde:
-| Parameter         | Type        | Description                                                       |
-| :---------------- | :---------- | :---------------------------------------------------------------- |
-| `licenses_id`      | `string` | Clave única de la licencia perteneciente a la institución.          |
-| `client_id`  | `string` | Clave única del cliente perteneciente a la licencia.      |
-| `identification_id`  | `string` | Clave única de la identificación perteneciente al cliente.      |
-### Body
-| Parameter         | Type        | Description                                                       |
-| :---------------- | :---------- | :---------------------------------------------------------------- |
-| `front`      | `json` | Coleccion de parámetros a editar de los datos pertenecientes a la parte frontal de la INE, soporta INE tipo C, DEF y GH.          |
-| `back`  | `json` | Coleccion de parámetros a editar de los datos pertenecientes a la parte frontal de la INE, soporta INE tipo C, DEF y GH.          |
 
-#### Body INE tipo C frontal
-| Parameter         | Type        | Description                                                       |
-| :---------------- | :---------- | :---------------------------------------------------------------- |
-| `lastname`      | `string` | **Requerido**. Apellido paterno que aparece en la INE del cliente. |
-| `surname`      | `string` | **Requerido**. Apellido materno que aparece en la INE del cliente. |
-| `name`      | `string` | **Requerido**. Nombre que aparece en la INE del cliente. |
-| `address`      | `string` | **Requerido**. Domicilio que aparece en la INE del cliente. |
-| `gender`      | `string` | **Requerido**. Sexo que aparece en la INE del cliente. |
-| `key`      | `string` | **Requerido**. Clave de elector del cliente. |
-| `curp`      | `string` | **Requerido**. CURP que aparece en la INE del cliente. |
-| `regDate`      | `string` | **Requerido**. Fecha de registro del cliente ante INE. |
-| `age`      | `string` | **Requerido**. Edad del cliente a la fecha de emisión de la identificación. |
-| `section`      | `string` | **Requerido**. Sección a la que pertenece la INE del cliente. |
-| `validity`      | `string` | **Requerido**. Año de validación de la INE. |
-| `state`      | `string` | **Requerido**. Estado al que pertenece la INE del cliente. |
-| `town`      | `string` | **Requerido**. Ciudad a la que pertenece la INE del cliente. |
-| `locality`      | `string` | **Requerido**. Localidad a la que pertenece la INE del cliente. |
-| `issue`      | `string` | **Requerido**. Fecha de emisión al que pertenece la INE del cliente. |
-| `folio`      | `string` | **Requerido**. Folio asociado a la INE del cliente. |
-    
-#### Body INE tipo DEF frontal
-| Parameter         | Type        | Description                                                       |
-| :---------------- | :---------- | :---------------------------------------------------------------- |
-| `lastname`      | `string` | **Requerido**. Apellido paterno que aparece en la INE del cliente. |
-| `surname`      | `string` | **Requerido**. Apellido materno que aparece en la INE del cliente. |
-| `name`      | `string` | **Requerido**. Nombre que aparece en la INE del cliente. |
-| `address`      | `string` | **Requerido**. Domicilio que aparece en la INE del cliente. |
-| `gender`      | `string` | **Requerido**. Sexo que aparece en la INE del cliente. |
-| `key`      | `string` | **Requerido**. Clave de elector del cliente. |
-| `curp`      | `string` | **Requerido**. CURP que aparece en la INE del cliente. |
-| `regDate`      | `string` | **Requerido**. Fecha de registro del cliente ante INE. |
-| `birthdate`      | `string` | **Requerido**. Fecha de nacimiento del cliente. |
-| `section`      | `string` | **Requerido**. Sección a la que pertenece la INE del cliente. |
-| `validity`      | `string` | **Requerido**. Año de validación de la INE. |
-| `state`      | `string` | **Requerido**. Estado al que pertenece la INE del cliente. |
-| `town`      | `string` | **Requerido**. Ciudad a la que pertenece la INE del cliente. |
-| `locality`      | `string` | **Requerido**. Localidad a la que pertenece la INE del cliente. |
-| `issue`      | `string` | **Requerido**. Fecha de emisión al que pertenece la INE del cliente. |
+donde: 
+| Parameter       | Type            | Description                                                 |
+| :-------------- | :-------------- | :---------------------------------------------------------- |
+| `id`            | `string`        |  Identificador único del catalogo                           |
 
-#### Body INE tipo GH frontal
-| Parameter         | Type        | Description                                                       |
-| :---------------- | :---------- | :---------------------------------------------------------------- |
-| `lastname`      | `string` | **Requerido**. Apellido paterno que aparece en la INE del cliente. |
-| `surname`      | `string` | **Requerido**. Apellido materno que aparece en la INE del cliente. |
-| `name`      | `string` | **Requerido**. Nombre que aparece en la INE del cliente. |
-| `address`      | `string` | **Requerido**. Domicilio que aparece en la INE del cliente. |
-| `gender`      | `string` | **Requerido**. Sexo que aparece en la INE del cliente. |
-| `key`      | `string` | **Requerido**. Clave de elector del cliente. |
-| `curp`      | `string` | **Requerido**. CURP que aparece en la INE del cliente. |
-| `regDate`      | `string` | **Requerido**. Fecha de registro del cliente ante INE. |
-| `birthdate`      | `string` | **Requerido**. Fecha de nacimiento del cliente. |
-| `section`      | `string` | **Requerido**. Sección a la que pertenece la INE del cliente. |
-| `validity`      | `string` | **Requerido**. Año de validación de la INE. |
-#### Body tipo DEF y GH trasera
-| Parameter         | Type        | Description                                                       |
-| :---------------- | :---------- | :---------------------------------------------------------------- |
-| `lastname`      | `string` | **Requerido**. Apellido paterno que aparece en la INE del cliente. |
-| `surname`      | `string` | **Requerido**. Apellido materno que aparece en la INE del cliente. |
-| `name`      | `string` | **Requerido**. Nombre que aparece en la INE del cliente. |
-| `birth_date`      | `string` | **Requerido**. Fecha de nacimiento del cliente. |
-| `gender`      | `string` | **Requerido**. Sexo que aparece en la INE del cliente. |
-| `expiry_date`      | `string` | **Requerido**. Fecha de expiración de la INE del cliente. |
-| `nationality`      | `string` | **Requerido**. Nacionalidad del cliente. |
-| `issue_number`      | `string` | **Requerido**. Número de expedición de la INE del cliente. |
-| `FUAR`      | `string` | **Requerido**. FUAR de la INE del cliente. |
-| `check_digit`      | `string` | **Requerido**. Dígito de verificación la INE del cliente. |
-| `type`      | `string` | **Requerido**. Tipo de documento. |
-| `country`      | `string` | **Requerido**. País de expedición de la INE. |
-| `cic`      | `string` | **Requerido**. CIC de la INE. |
-| `cic_id`      | `string` | **Requerido**. ID perteneciente al CIC de la INE. |
-| `ocr`      | `string` | **Requerido**. OCR de la INE. |
-| `citizenID`      | `string` | **Requerido**. Clave de ciudadano asociado a la INE. |
-| `section`      | `string` | **Requerido**. Sección a la que pertenece el cliente. |
-#### Body tipo C trasera
-| Parameter         | Type        | Description                                                       |
-| :---------------- | :---------- | :---------------------------------------------------------------- |
-| `ocr`      | `string` | **Requerido**. OCR asociado a la INE del cliente. |
 
-#### Response 
-| Key        | Type           | Description                                                      |
+#### Body
+| Parameter         | Type        | Description                                                       |
 | :---------------- | :---------- | :---------------------------------------------------------------- |
-| `identification_id`      | `string` |ID unico asociado a la identificación. |
-| `type`      | `string` | Tipo de identificacioón. |
-| `front`      | `json` |  Conjunto de información que aparece en la parte frontal de la INE. |
-| `back`      | `json` | Conjunto de información que aparece en la parte trasera de la INE. |
-| `created_at`        | `date`         | Fecha de creación de la aplicación         |
-| `updated_at`        | `date`         | Fecha de modificación de la aplicación     |
+| `name`            | `string`    | **Requerido**. Nombre del campo                                   |
+| `value_type`      | `string`    | **Requerido**. Tipo de dato del campo (ej. "INTEGER").            |
+| `min_range`       | `number`    | Valor mínimo aceptado para el campo.                              |
+| `max_range`       | `number`    | Valor máximo aceptado para el campo.                              |
+| `accepted_values` | `array`     | Lista de valores aceptados para el campo.                         |
+| `regex_pattern`   | `string`    | Patrón de expresión regular para el campo                         |
 
-Elimina el detalle de una identificación de un cliente.
+**Tipos de Datos Permitidos:** ("INTEGER", "FLOAT", "STRING", "ENUM", "BOOLEAN")
+
+| Datatype          | min_range / max_range | accepted_values | regex_pattern   |
+| :---------------- | :-------------------- | :-------------- | --------------  |
+| `INTEGER`         | APLICA                | NO APLICA       | NO APLICA       |
+| `FLOAT`           | APLICA                | NO APLICA       | NO APLICA       |
+| `STRING`          | APLICA                | NO APLICA       | APLICA          |
+| `ENUM`            | NO APLICA             | APLICA          | NO APLICA       |
+| `BOOLEAN`         | NO APLICA             | NO APLICA       | NO APLICA       |
+
+#### Response
+| Key               | Value       | Description                                                         |
+| :---------------- | :---------- | :----------------------------------------------------------------   |
+| `status`          | `string`    | Estado de la petición. Indica el resultado.                         |
+| `catalog`         | `object`    | Objeto que contiene detalles del catálogo.                          |        
+
+El objeto `catalog` contiene la siguiente información:
+
+| Key               | Value     | Description                                           |
+| :---------------- | :-------- | :---------------------------------------------------  |
+| `id`              | `string`  | Identificador único del catálogo.                     |
+| `name`            | `string`  | Nombre del catálogo.                                  |
+| `fields`          | `array`   | Lista de campos del catálogo.                         |
+
+Cada campo en `fields` contiene:
+
+| Key               | Value     | Description                                           |
+| :---------------- | :-------- | :---------------------------------------------------  |
+| `id`              | `string`    | Identificador único del campo del catálogo.         |
+| `name`            | `string`    | Nombre del campo                                    |
+| `value_type`      | `string`    | Tipo de dato del campo                              |
+| `min_range`       | `number`    | Valor mínimo aceptado para el campo.                |
+| `max_range`       | `number`    | Valor máximo aceptado para el campo.                |
+| `accepted_values` | `array`     | Lista de valores aceptados para el campo.           |
+| `regex_pattern`   | `string`    | Patrón de expresión regular para el campo           |
+
+
+Edita un campo en el catalogo
 ```http
-  DELETE /onboarding/api/v0/licenses/{licenses_id}/clients/{client_id}/id/{identification_id}
+  PUT /onboarding/api/v0/risk_matrix/catalogs/fields/{id_field}
 ```
-#### Donde:
+
+donde: 
+| Parameter       | Type            | Description                                                 |
+| :-------------- | :-------------- | :---------------------------------------------------------- |
+| `id_field`      | `string`        |  Identificador único de un campo del catalogo               |
+
+#### Body
 | Parameter         | Type        | Description                                                       |
 | :---------------- | :---------- | :---------------------------------------------------------------- |
-| `licenses_id`      | `string` | Clave única de la licencia perteneciente a la institución.          |
-| `client_id`  | `string` | Clave única del cliente perteneciente a la licencia.      |
-| `identification_id`  | `string` | Clave única de la identificación perteneciente al cliente.      |
+| `name`            | `string`    | Nombre del campo                                                  |
+| `value_type`      | `string`    | Tipo de dato del campo (ej. "INTEGER").                           |
+| `min_range`       | `number`    | Valor mínimo aceptado para el campo.                              |
+| `max_range`       | `number`    | Valor máximo aceptado para el campo.                              |
+| `accepted_values` | `array`     | Lista de valores aceptados para el campo.                         |
+| `regex_pattern`   | `string`    | Patrón de expresión regular para el campo                         |
 
-### OCR
+#### Response
+| Key               | Value    | Description                                                          |
+| :---------------- | :---------- | :---------------------------------------------------------------- |
+| `status`          | `string`  | Estado de la petición. Indica el resultado.                         |
+| `catalog`         | `object`  | Objeto que contiene detalles del catálogo.                          |        
 
-Recupera la información de identificaciones (soportadas INE de tipo C, DEF y GH, parte frontal y trasera) y comprobantes de domicilio (soportados TELMEX Y CFE) y los asocia a un cliente.
+El objeto `catalog` contiene la siguiente información:
+
+| Key               | Value     | Description                                           |
+| :---------------- | :-------- | :---------------------------------------------------  |
+| `id`              | `string`  | Identificador único del catálogo.                     |
+| `name`            | `string`  | Nombre del catálogo.                                  |
+| `fields`          | `array`   | Lista de campos del catálogo.                         |
+
+Cada campo en `fields` contiene:
+
+| Key               | Value     | Description                                           |
+| :---------------- | :-------- | :---------------------------------------------------  |
+| `id`              | `string`    | Identificador único del campo del catálogo.         |
+| `name`            | `string`    | Nombre del campo                                    |
+| `value_type`      | `string`    | Tipo de dato del campo                              |
+| `min_range`       | `number`    | Valor mínimo aceptado para el campo.                |
+| `max_range`       | `number`    | Valor máximo aceptado para el campo.                |
+| `accepted_values` | `array`     | Lista de valores aceptados para el campo.           |
+| `regex_pattern`   | `string`    | Patrón de expresión regular para el campo           |
+
+
+Elimina un campo en el catalogo
 ```http
-  POST /onboarding/api/v0/licenses/{licenses_id}/clients/{client_id}/ocr/{ocr_type}
+  DELETE /onboarding/api/v0/risk_matrix/catalogs/fields/{id_field}
 ```
-#### Donde:
+
+donde: 
+| Parameter       | Type            | Description                                                 |
+| :-------------- | :-------------- | :---------------------------------------------------------- |
+| `id_field`      | `string`        |  Identificador único de un campo del catalogo               |
+
+#### Response
+| Key               | Value    | Description                                                          |
+| :---------------- | :---------- | :---------------------------------------------------------------- |
+| `status`          | `string`  | Estado de la petición. Indica el resultado.                         |
+| `catalog`         | `object`  | Objeto que contiene detalles del catálogo.                          |        
+
+El objeto `catalog` contiene la siguiente información:
+
+| Key               | Value     | Description                                           |
+| :---------------- | :-------- | :---------------------------------------------------  |
+| `id`              | `string`  | Identificador único del catálogo.                     |
+| `name`            | `string`  | Nombre del catálogo.                                  |
+| `fields`          | `array`   | Lista de campos del catálogo.                         |
+
+Cada campo en `fields` contiene:
+
+| Key               | Value     | Description                                           |
+| :---------------- | :-------- | :---------------------------------------------------  |
+| `id`              | `string`    | Identificador único del campo del catálogo.         |
+| `name`            | `string`    | Nombre del campo                                    |
+| `value_type`      | `string`    | Tipo de dato del campo                              |
+| `min_range`       | `number`    | Valor mínimo aceptado para el campo.                |
+| `max_range`       | `number`    | Valor máximo aceptado para el campo.                |
+| `accepted_values` | `array`     | Lista de valores aceptados para el campo.           |
+| `regex_pattern`   | `string`    | Patrón de expresión regular para el campo           |
+
+
+### Evaluacion de una matriz
+
+Elimina un campo en el catalogo
+```http
+  POST /onboarding/api/v0/risk_matrix/{id}/evaluation
+```
+
+donde: 
+| Parameter       | Type            | Description                                                 |
+| :-------------- | :-------------- | :---------------------------------------------------------- |
+| `id`            | `string`        |  Identificador único de la matriz de riesgo.                |
+
+#### Body
 | Parameter         | Type        | Description                                                       |
 | :---------------- | :---------- | :---------------------------------------------------------------- |
-| `licenses_id`      | `string` | Clave única de la licencia perteneciente a la institución.          |
-| `client_id`  | `string` | Clave única del cliente perteneciente a la licencia.      |
-| `ocr_type`  | `string` | **bill** para comprobantes de domicio e **id** para identificaciones  |
-### body
-| Parameter | Type             | Description                                                       |
-| :-------- | :--------------- | :---------------------------------------------------------------- |
-| `file`    | `string binary`  | **Requerido**. El archivo (imagen o PDF) de donde se desea extraer la información            |
-#### Response para tipo id
-| Key        | Type           | Description                                                      |
+| `values`          | `array`     | Array con los valores a evaluar                                   |
+
+El array `values` debe de contener la siguiente información:
+
+| Campo             | Tipo      | Descripción                                           |
+| :---------------- | :-------- | :---------------------------------------------------  |
+| `name`            | `string`  | Nombre del campo                                      |
+| `value`           | `any`     | Valor a evaluar                                       |
+
+#### JSON de Ejemplo
+```json
+{
+  "values": [
+    {
+      "name": "EDAD",
+      "value": 25
+    },
+    {
+      "name": "NUM. DE HIJOS",
+      "value": 1
+    }
+  ]
+}
+```
+
+Es importante tener en cuenta lo siguiente:
+
+- **Nombre:** El nombre debe ser el nombre del campo del catálogo que ingresaste en cada campo de una sección (campo `catalog_field_id`).
+
+#### Response
+| Key               | Value       | Description                                                          |
 | :---------------- | :---------- | :---------------------------------------------------------------- |
-| `identification_id`      | `string` | ID unico asociado a la identificación. |
-| `type`      | `string` |  Tipo de identificacioón. |
-| `front`      | `json` | Conjunto de información que aparece en la parte frontal de la INE. |
-| `back`      | `json` | Conjunto de información que aparece en la parte trasera de la INE. |
-| `created_at`        | `date`         | Fecha de creación de la aplicación         |
-| `updated_at`        | `date`         | Fecha de modificación de la aplicación     |
+| `risk`            | `number`    | Riesgo general asociado con la evaluación.                        |
+| `threshold`       | `string`    | Umbral de riesgo general de la evaluación.                        |    
+| `sections`        | `array`     | Lista de secciones evaluadas en la evaluación.                    | 
 
-#### Response tipo bill TELMEX
-| Key               | Value    | Description                                                     |
-| :---------------- | :---------- | :---------------------------------------------------------------- |
-| `name`      | `string` |  Nombre asociado al recibo TELMEX. |
-| `address`      | `string` |  Dirección asociada al recibo TELMEX. |
-| `date`      | `string` |  Fecha del recibo TELMEX. |
-| `bill`      | `string` | Número de factura del recibo TELMEX. |
-| `phone_num`      | `string` |  Número de telefono del recibo TELMEX. |
+Cada sección en `sections` contiene:
 
-#### Response tipo bill CFE
- 
-| Key               | Value    | Description                                              |
-| :---------------- | :---------- | :---------------------------------------------------------------- |
-| `name`      | `string` | Nombre asociado al recibo CFE. |
-| `service_no`      | `string` | Número de servicio asociado al recibo CFE. |
-| `rmu`      | `string` |  RMU del recibo CFE. |
-| `date`      | `string` | Fecha limite de pago del recibo CFE. |
-| `wattmeter`      | `string` |  Número de medidor que aparece en el recibo CFE. |
-| `rate`      | `string` |  Tarifa del recibo CFE. |
-| `address`      | `string` |  Domicilio que asociado al recibo CFE. |
+| Key               | Value     | Description                                           |
+| :---------------- | :-------- | :---------------------------------------------------  |
+| `name`            | `string`  | Nombre de la sección evaluada.                        |
+| `risk`            | `number`  | Riesgo asociado con la sección evaluada.              |
+| `threshold`       | `string`  | Umbral de riesgo de la sección evaluada.              |
+| `fields`          | `array`   | Lista de campos evaluados en la sección.              |
 
+Cada campo en `fields` contiene:
 
+| Key               | Value     | Description                                           |
+| :---------------- | :-------- | :---------------------------------------------------  |
+| `name`            | `string`  | Nombre del campo evaluado.                            |
+| `value`           | `any`     | Valor del campo evaluado.                             |
+| `risk`            | `number`  | Riesgo asociado con el campo evaluado.                |
+| `threshold`       | `string`  | Umbral de riesgo del campo evaluado.                  |
 
+# Evaluación de Riesgo: Qué se evalúa en cada tipo de dato
+
+En el proceso de evaluación de riesgo, se realizan diferentes validaciones y cálculos en función del tipo de dato proporcionado por el usuario y las restricciones definidas en el campo de un catalogo. A continuación, se detalla qué se evalúa en cada tipo de dato:
+
+## Tipo de Dato `INTEGER` y `FLOAT`
+
+Para los tipos de dato numéricos `INTEGER` y `FLOAT`, se evalúan los siguientes aspectos:
+
+- **Rango de Valores:** Si el valor proporcionado está dentro del rango permitido definido por los campos `min_range` y `max_range` en el campo del catalogo.
+- **Cálculo de Riesgo:** Se calcula el riesgo en función de la posición del valor en el rango de valores permitidos. Los valores fuera del rango tienen un riesgo alto.
+
+## Tipo de Dato `STRING`
+
+Para el tipo de dato `STRING`, se evalúan los siguientes aspectos:
+
+- **Longitud del Valor:** Si la longitud del valor proporcionado está dentro de los límites definidos por los campos `min_range` y `max_range` en el campo del catalogo.
+- **Expresión Regular:** Si el valor proporcionado coincide con el patrón de expresión regular (`regex_pattern`) definido en el campo del catalogo.
+
+## Tipo de Dato `ENUM`
+
+Para el tipo de dato `ENUM`, se evalúa lo siguiente:
+
+- **Valor en Enumeración:** Si el valor proporcionado está presente en la lista de valores aceptados (`accepted_values`) definidos en el campo del catalogo .
+- **Cálculo de Riesgo:** Se calcula el riesgo en función de la posición del valor en la enumeración. Los valores no presentes en la enumeración tienen un riesgo alto.
+
+## Tipo de Dato `BOOLEAN`
+
+Para el tipo de dato `BOOLEAN`, se evalúa lo siguiente:
+
+- **Valor Booleano:** Si el valor proporcionado es un valor booleano (verdadero o falso).
+- **Cálculo de Riesgo:** Los valores `False` tienen un riesgo alto, mientras que los valores `True` tienen un riesgo bajo.
